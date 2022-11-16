@@ -1,0 +1,144 @@
+@import '../../styles/helpers/variables.scss';
+
+.form {
+  border: 1px solid $color-grey;
+  border-radius: 12px;
+  box-shadow: (0 20px 40px rgba(135 124 202 / 25%));
+  padding: 20px;
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.formDisabled {
+  opacity: 0.5;
+}
+
+.content {
+  width: 65%;
+}
+
+.title {
+  color: $color-blue;
+  margin: 10px;
+}
+
+.input {
+  border: 1px solid $color-grey;
+  border-radius: 12px;
+  color: $color-black-text;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+
+  &:disabled {
+    border: 1px dotted $color-grey;
+  }
+}
+
+.description {
+  max-height: 200px;
+  height: 100%;
+  overflow-y: auto;
+  resize: none;
+}
+
+.file {
+  display: none;
+}
+
+.upload {
+  border: 2px solid $color-blue;
+  box-sizing: border-box;
+  border-radius: 10px;
+  color: $color-black-text;
+  background-color: $color-grey-light;
+  padding: 10px;
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+.uploadLabel {
+  width: 100%;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.fileItem {
+  padding: 0 10px;
+  font-size: 80%;
+}
+
+.buttons {
+  width: 200px;
+  display: flex;
+  justify-content: space-around;
+  gap: 15px;
+}
+
+.button {
+  width: 35px;
+  height: 35px;
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+  padding: 2px;
+  opacity: 0.3;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:active {
+    opacity: 0.5;
+  }
+}
+
+.edit {
+  &:hover {
+    svg {
+      fill: $color-blue;
+    }
+  }
+}
+
+.delete {
+  &:hover {
+    svg {
+      fill: $color-red;
+    }
+  }
+}
+
+.save {
+  width: auto;
+  opacity: 0.7;
+  border: 2px solid $color-blue;
+  border-radius: 10px;
+  color: $color-black-text;
+  background-color: $color-grey-light;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.checkbox {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 24px;
+  height: 24px;
+  background-image: url('../../assets/icons/checkbox.svg');
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  cursor: pointer;
+}
+.checkboxDone {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 24px;
+  height: 24px;
+  background-image: url('../../assets/icons/checkboxDone.svg');
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  cursor: pointer;
+}
