@@ -1,0 +1,51 @@
+@import '../helpers/variables';
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  color: $color-black-text;
+  background-color: $color-white;
+  font-family: Montserrat, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+h1,
+h2 {
+  padding: 0;
+  margin: 0;
+}
+
+.container {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 30px 15px;
+
+  @media (max-width: $desktop-width) {
+    max-width: 1120px;
+  }
+
+  @media (max-width: $tablet-width) {
+    max-width: 800px;
+  }
+
+  @media (max-width: $mobile-width) {
+    max-width: 310px;
+  }
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
