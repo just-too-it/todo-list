@@ -1,4 +1,4 @@
-@import '../../styles/helpers/variables.scss';
+@import '../../styles/helpers/variables';
 
 .form {
   border: 1px solid $color-grey;
@@ -9,19 +9,41 @@
   gap: 50px;
   align-items: center;
   justify-content: space-between;
+
+  @media (max-width: $mobile-width) {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 .formDisabled {
   opacity: 0.5;
+  background-color: rgb(189 191 192 / 100%);
+  transition: all 0.3s ease-in;
+
+  .edit {
+    &:hover {
+      opacity: 0.3;
+      cursor: auto;
+    }
+  }
 }
 
 .content {
   width: 65%;
+
+  @media (max-width: $mobile-width) {
+    width: 100%;
+  }
 }
 
 .title {
   color: $color-blue;
   margin: 10px;
+
+  @media (max-width: $mobile-width) {
+    margin: 5px;
+  }
 }
 
 .input {
@@ -42,6 +64,11 @@
   height: 100%;
   overflow-y: auto;
   resize: none;
+
+  @media (max-width: $mobile-width) {
+    max-height: 100px;
+    height: auto;
+  }
 }
 
 .file {
@@ -88,10 +115,12 @@
 
   &:hover {
     opacity: 1;
+    transition: all 0.2s ease-in;
   }
 
   &:active {
     opacity: 0.5;
+    transition: all 0.2s ease-in;
   }
 }
 
@@ -99,6 +128,7 @@
   &:hover {
     svg {
       fill: $color-blue;
+      transition: all 0.2s ease-in;
     }
   }
 }
@@ -107,19 +137,9 @@
   &:hover {
     svg {
       fill: $color-red;
+      transition: all 0.2s ease-in;
     }
   }
-}
-
-.save {
-  width: auto;
-  opacity: 0.7;
-  border: 2px solid $color-blue;
-  border-radius: 10px;
-  color: $color-black-text;
-  background-color: $color-grey-light;
-  padding: 5px 10px;
-  cursor: pointer;
 }
 
 .checkbox {
@@ -132,6 +152,7 @@
   background-position: 50% 50%;
   cursor: pointer;
 }
+
 .checkboxDone {
   -webkit-appearance: none;
   -moz-appearance: none;

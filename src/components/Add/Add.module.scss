@@ -1,0 +1,63 @@
+@import '../../styles/helpers/variables';
+
+.form {
+  margin-bottom: 30px;
+
+  & fieldset {
+    border: 1px solid $color-grey;
+    box-shadow: (0 20px 40px rgba(135 124 202 / 25%));
+    border-radius: 12px;
+    padding: 20px 50px;
+    background-color: $color-grey-light;
+  }
+
+  & legend {
+    color: $color-blue;
+    padding: 0 20px;
+  }
+}
+
+.input {
+  border: 1px solid $color-grey;
+  border-radius: 12px;
+  color: $color-black-text;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+}
+
+.description {
+  max-height: 200px;
+  height: 100%;
+  overflow-y: auto;
+  resize: none;
+}
+
+.file {
+  display: none;
+}
+
+.upload {
+  border: 2px solid $color-blue;
+  box-sizing: border-box;
+  border-radius: 10px;
+  color: $color-black-text;
+  background-color: $color-grey-light;
+  padding: 10px;
+  margin: 10px 0;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.uploadLabel {
+  width: 100%;
+  display: inline-block;
+  opacity: 0.7;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+    transition: all 0.2s ease-in;
+    text-align: center;
+  }
+}

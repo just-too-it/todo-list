@@ -1,6 +1,8 @@
 export type TodoProps = {
-    title: string;
-    description?: string;
-    complete: boolean;
-    attachment?: any[];
-}
+  id: number | string;
+  title: string;
+  description?: string;
+  completed: boolean;
+  attachment?: any[];
+  date?: Date;
+};

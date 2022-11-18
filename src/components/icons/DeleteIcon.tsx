@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { IconProps } from './icon.types'
+import { IconProps } from './icon.types';
 
 export const DeleteIcon: FC<IconProps> = ({ width, height }) => {
   return (
