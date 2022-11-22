@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Formik, Form, Field, FormikHelpers, FormikProps } from 'formik';
 import dayjs from 'dayjs';
@@ -43,8 +43,6 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
     dispatch(deleteTodo(id));
   };
 
-
-  
   return (
     <>
       <Formik
@@ -54,7 +52,6 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
         validateOnBlur={false}
         onSubmit={(values: Values, { setSubmitting }: FormikHelpers<Values>) => {
           setTimeout(async () => {
-            
             dispatch(
               editTodo({
                 id: id,
@@ -92,20 +89,19 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
                 className={clsx(styles.input, styles.description)}
                 disabled={!isEditMode}
               />
-                  <div className={styles.title}>Дедлайн</div>
-                  <Field
-                    type="date"
-                    id="date"
-                    name="date"
-                    className={clsx(styles.date, (dayjs(values.date) < dayjs()) && styles.dateExpired)}
-                    disabled={!isEditMode}
-                  />
-
+              <div className={styles.title}>Дедлайн</div>
+              <Field
+                type="date"
+                id="date"
+                name="date"
+                className={clsx(styles.date, dayjs(values.date) < dayjs() && styles.dateExpired)}
+                disabled={!isEditMode}
+              />
 
               {isEditMode && (
                 <div className={styles.upload}>
                   <label htmlFor="files" className={styles.uploadLabel}>
-                    Выбрать файлы
+                    Прикрепить файл
                   </label>
                   <input
                     id="files"
@@ -134,7 +130,7 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
 
               {attachmentName && (
                 <div>
-                  <div className={styles.title}>Выбранные файлы</div>
+                  <div className={styles.title}>Прикрепленный файл</div>
                   <ul className={styles.description}>
                     <li>
                       <a href={attachmentLink} target="_blank" rel="noreferrer">

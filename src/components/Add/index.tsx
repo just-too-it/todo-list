@@ -1,22 +1,17 @@
 import React from 'react';
 import { Formik, Form, Field, FormikHelpers } from 'formik';
 import clsx from 'clsx';
+import { v4 as uuidv4 } from 'uuid';
 
 import { handleFileUpload } from 'core/utils/handleFileUpload';
 import { addTodo } from 'store/todos/todos.asyncActions';
-import { useAppDispatch, useAppSelector } from 'store/store.hooks';
+import { useAppDispatch } from 'store/store.hooks';
 import { Button } from 'components/UI/Button';
-import { selectTodos } from 'store/todos/todos.selectors';
-import { v4 as uuidv4 } from 'uuid';
-
 
 import styles from './Add.module.scss';
-import dayjs from 'dayjs';
 
 export const Add = () => {
-
   const dispatch = useAppDispatch();
-  
 
   interface Values {
     addTitle: string;
@@ -29,7 +24,7 @@ export const Add = () => {
     addTitle: '',
     addDescription: '',
     addFiles: [],
-    addDate: ''
+    addDate: '',
   };
 
   return (
@@ -40,7 +35,6 @@ export const Add = () => {
         validateOnBlur={false}
         onSubmit={(values: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
           setTimeout(async () => {
-            
             dispatch(
               addTodo({
                 id: uuidv4(),
@@ -48,7 +42,7 @@ export const Add = () => {
                 completed: false,
                 description: values.addDescription,
                 attachment: values.addFiles,
-                date: values.addDate
+                date: values.addDate,
               })
             );
             setSubmitting(false);
@@ -71,10 +65,10 @@ export const Add = () => {
                   className={clsx(styles.input, styles.description)}
                 />
                 <div className={styles.date}>Задайте дедлайн</div>
-                <Field type='date' id="addDate" name="addDate" className={clsx(styles.input, styles.deadline)}/>
+                <Field type="date" id="addDate" name="addDate" className={clsx(styles.input, styles.deadline)} />
                 <div className={styles.upload}>
                   <label htmlFor="addFiles" className={styles.uploadLabel}>
-                    Выбрать файлы
+                    Прикрепить файл
                   </label>
                   <input
                     id="addFiles"
@@ -88,7 +82,7 @@ export const Add = () => {
 
                 {values.addFiles?.length > 0 ? (
                   <div>
-                    <div className={styles.title}>Выбранные файлы</div>
+                    <div className={styles.title}>Прикрепленный файл</div>
                     <ul className={styles.description}>
                       {values.addFiles?.map((file) => (
                         <li key={file.size} className={styles.fileItem}>

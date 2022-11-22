@@ -53,9 +53,7 @@
     "prettier": "prettier --check src/**/*{.css,.scss}",
     "prettier:fix": "prettier --write src/**/*{.css,.scss,.ts,.tsx}",
     "eslint": "eslint src/**/*{.ts,.tsx}",
-    "eslint:fix": "eslint src/**/*{.ts,.tsx} --fix",
-    "deploy": "gh-pages -d build",
-    "predeploy": "npm run build"
+    "eslint:fix": "eslint src/**/*{.ts,.tsx} --fix"
   },
   "eslintConfig": {
     "extends": [
