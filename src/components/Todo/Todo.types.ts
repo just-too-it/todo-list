@@ -1,8 +1,10 @@
 export type TodoProps = {
-  id: number | string;
+  id?: number | string;
   title: string;
   description?: string;
   completed: boolean;
   attachment?: any[];
-  date?: Date;
+  attachmentName?: string;
+  attachmentLink?: string;
+  date?: any; //заменить на Date
 };

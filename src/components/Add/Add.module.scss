@@ -58,6 +58,9 @@
   &:hover {
     opacity: 1;
     transition: all 0.2s ease-in;
+  }
+
+  @media (max-width: $mobile-width) {
     text-align: center;
   }
 }

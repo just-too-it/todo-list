@@ -1,5 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { collection, getDocs, deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
+import {} from 'firebase/firestore';
+import { storage, db } from 'store/firebase/firebase';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 
 import { TodoProps } from 'components/Todo/Todo.types';
 import { addTodoItem, completeTodoItem, deleteTodoItem, editTodoItem } from './todos.slice';
@@ -7,8 +10,12 @@ import { TodosState } from './todos.types';
 
 export const fetchTodos = createAsyncThunk('todos/fetchTodos', async (_, { rejectWithValue }) => {
   try {
-    const response = await axios.get(`${process.env.REACT_APP_API}?_limit=5`);
-    return response.data as TodoProps[];
+    const querySnapshot = await getDocs(collection(db, 'todos'));
+    const arr = [];
+    querySnapshot.forEach((doc) => {
+      arr.push(doc.data());
+    });
+    return arr as TodoProps[];
   } catch (error) {
     return rejectWithValue((error as Error).message);
   }
@@ -18,11 +25,10 @@ export const deleteTodo = createAsyncThunk(
   'todos/deleteTodo',
   async (id: number | string, { rejectWithValue, dispatch }) => {
     try {
-      await axios.get(`${process.env.REACT_APP_API}/${id}`, {
-        method: 'DELETE',
-      });
+      await deleteDoc(doc(db, 'todos', `${id}`));
       dispatch(deleteTodoItem(id));
     } catch (error) {
+      console.log(error);
       return rejectWithValue((error as Error).message);
     }
   }
@@ -30,40 +36,96 @@ export const deleteTodo = createAsyncThunk(
 
 export const addTodo = createAsyncThunk('todos/addTodo', async (todo: TodoProps, { rejectWithValue, dispatch }) => {
   try {
-    await axios.post(`${process.env.REACT_APP_API}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        title: todo.title,
-        description: todo.description,
-        completed: todo.completed,
-        attachment: todo.attachment,
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    });
+    if (todo.attachment.length > 0) {
+      let newTodo: TodoProps;
+      const storageRef = ref(storage, todo.attachment[0].name);
+      const uploadTask = uploadBytesResumable(storageRef, todo.attachment[0]);
 
-    dispatch(addTodoItem(todo));
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + progress + '% done');
+          switch (snapshot.state) {
+            case 'paused':
+              console.log('Upload is paused');
+              break;
+            case 'running':
+              console.log('Upload is running');
+              break;
+          }
+        },
+        (error) => {
+          console.error('Error upload: ', error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref)
+            .then((downloadURL) => {
+              todo = { ...todo, attachmentName: uploadTask.snapshot.ref.name, attachmentLink: downloadURL };
+              return (newTodo = { ...todo, attachment: [] });
+            })
+            .then((newTodo) => {
+              setDoc(doc(db, 'todos', `${todo.id}`), newTodo);
+              dispatch(addTodoItem(todo));
+            });
+        }
+      );
+    } else {
+      await setDoc(doc(db, 'todos', `${todo.id}`), todo);
+      dispatch(addTodoItem(todo));
+    }
   } catch (error) {
+    console.error('Error adding document: ', error);
     return rejectWithValue((error as Error).message);
   }
 });
 
 export const editTodo = createAsyncThunk('todos/editTodo', async (todo: TodoProps, { rejectWithValue, dispatch }) => {
   try {
-    await axios.put(`${process.env.REACT_APP_API}/${todo.id}`, {
-      method: 'PUT',
-      body: JSON.stringify({
+    const todoRef = doc(db, 'todos', `${todo.id}`);
+    if (todo.attachment.length > 0) {
+      let newTodo: TodoProps;
+      const storageRef = ref(storage, todo.attachment[0].name);
+      const uploadTask = uploadBytesResumable(storageRef, todo.attachment[0]);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + progress + '% done');
+          switch (snapshot.state) {
+            case 'paused':
+              console.log('Upload is paused');
+              break;
+            case 'running':
+              console.log('Upload is running');
+              break;
+          }
+        },
+        (error) => {
+          console.error('Error upload: ', error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref)
+            .then((downloadURL) => {
+              todo = { ...todo, attachmentName: uploadTask.snapshot.ref.name, attachmentLink: downloadURL };
+              return (newTodo = { ...todo, attachment: [] });
+            })
+            .then((newTodo) => {
+              updateDoc(todoRef, newTodo);
+              dispatch(editTodoItem(todo));
+            });
+        }
+      );
+    } else {
+      updateDoc(todoRef, {
         title: todo.title,
         description: todo.description,
-        attachment: todo.attachment,
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    });
-    dispatch(editTodoItem(todo));
+      });
+      dispatch(editTodoItem(todo));
+    }
   } catch (error) {
+    console.log(error);
     return rejectWithValue((error as Error).message);
   }
 });
@@ -74,18 +136,14 @@ export const completeTodo = createAsyncThunk(
     const { todos } = getState() as { todos: TodosState };
     const todo = todos.todos.find((todo) => todo.id === id);
 
+    const todoRef = doc(db, 'todos', `${todo.id}`);
     try {
-      await axios.put(`${process.env.REACT_APP_API}/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          completed: !todo.completed,
-        }),
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
+      await updateDoc(todoRef, {
+        completed: !todo.completed,
       });
-      dispatch(completeTodoItem(id));
+      dispatch(completeTodoItem(todo.id));
     } catch (error) {
+      console.log(error);
       return rejectWithValue((error as Error).message);
     }
   }

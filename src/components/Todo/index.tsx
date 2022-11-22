@@ -5,14 +5,15 @@ import { Formik, Form, Field, FormikHelpers, FormikProps } from 'formik';
 import { TodoProps } from './Todo.types';
 import { DeleteIcon, EditIcon } from 'components/icons';
 import { deleteTodo, editTodo, completeTodo } from 'store/todos/todos.asyncActions';
-import { useAppDispatch } from 'store/store.hooks';
+import { useAppDispatch} from 'store/store.hooks';
 import { handleFileUpload } from 'core/utils/handleFileUpload';
 import { Button } from 'components/UI/Button';
 
 import styles from './Todo.module.scss';
 
+
 export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
-  const { id, title, description, completed, attachment } = todo;
+  const { id, title, description, completed, attachment, attachmentName } = todo;
   const [isEditMode, setIsEditMode] = useState(false);
   const formRef = useRef<FormikProps<any>>(null);
   const dispatch = useAppDispatch();
@@ -33,7 +34,7 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
 
   const handleCheck = (setValue, check: boolean) => {
     dispatch(completeTodo(id));
-    setValue('complete', !check)
+    setValue('complete', !check);
   };
 
   const handleDelete = () => {
@@ -49,7 +50,6 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
         validateOnBlur={false}
         onSubmit={(values: Values, { setSubmitting }: FormikHelpers<Values>) => {
           setTimeout(async () => {
-            console.log(JSON.stringify(values, null, 2));
 
             dispatch(
               editTodo({
@@ -104,18 +104,28 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
                 </div>
               )}
 
-              {values.files?.length > 0 ? (
+              {/* {values.files?.length > 0 ? (
                 <div>
                   <div className={styles.title}>Выбранные файлы</div>
                   <ul className={styles.description}>
-                    {values.files?.map((file) => (
-                      <li key={file.size} className={styles.fileItem}>
+                   {values.files?.map((file,i) => (
+                      <li key={i} className={styles.fileItem}>
                         {file.name}
                       </li>
-                    ))}
+                    ))} 
                   </ul>
                 </div>
-              ) : null}
+              ) : null} */}
+
+              {attachmentName && (
+                <div>
+                  <div className={styles.title}>Выбранные файлы</div>
+                  <ul className={styles.description}>
+                    <li>
+                      <a href={todo.attachmentLink} target='_blank' rel="noreferrer">{attachmentName}</a></li>
+                    </ul>
+                </div>
+              )}
             </div>
             <div className={styles.buttons}>
               {isEditMode && <Button type="submit">Сохранить</Button>}

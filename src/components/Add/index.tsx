@@ -7,11 +7,12 @@ import { addTodo } from 'store/todos/todos.asyncActions';
 import { useAppDispatch, useAppSelector } from 'store/store.hooks';
 import { Button } from 'components/UI/Button';
 import { selectTodos } from 'store/todos/todos.selectors';
+import { v4 as uuidv4 } from 'uuid';
+
 
 import styles from './Add.module.scss';
 
 export const Add = () => {
-  const { todos } = useAppSelector(selectTodos);
 
   const dispatch = useAppDispatch();
 
@@ -35,14 +36,15 @@ export const Add = () => {
         validateOnBlur={false}
         onSubmit={(values: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
           setTimeout(async () => {
-            console.log(JSON.stringify(values, null, 2));
+            
             dispatch(
               addTodo({
-                id: todos.length + 1,
+                id: uuidv4(),
                 title: values.addTitle,
                 completed: false,
                 description: values.addDescription,
                 attachment: values.addFiles,
+                date: 'dssfd'
               })
             );
             setSubmitting(false);
