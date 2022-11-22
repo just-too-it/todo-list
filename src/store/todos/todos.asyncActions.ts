@@ -121,6 +121,7 @@ export const editTodo = createAsyncThunk('todos/editTodo', async (todo: TodoProp
       updateDoc(todoRef, {
         title: todo.title,
         description: todo.description,
+        date: todo.date,
       });
       dispatch(editTodoItem(todo));
     }

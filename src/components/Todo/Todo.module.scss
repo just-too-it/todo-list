@@ -163,3 +163,14 @@
   background-position: 50% 50%;
   cursor: pointer;
 }
+
+.date {
+  border: none;
+  background-color: transparent;
+  color: $color-black-text;
+  outline: none;
+}
+
+.dateExpired {
+  color: $color-red;
+}

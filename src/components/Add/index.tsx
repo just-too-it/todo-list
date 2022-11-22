@@ -11,21 +11,25 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 import styles from './Add.module.scss';
+import dayjs from 'dayjs';
 
 export const Add = () => {
 
   const dispatch = useAppDispatch();
+  
 
   interface Values {
     addTitle: string;
     addDescription: string;
     addFiles: any[];
+    addDate: string;
   }
 
   const initValues: Values = {
     addTitle: '',
     addDescription: '',
     addFiles: [],
+    addDate: ''
   };
 
   return (
@@ -44,7 +48,7 @@ export const Add = () => {
                 completed: false,
                 description: values.addDescription,
                 attachment: values.addFiles,
-                date: 'dssfd'
+                date: values.addDate
               })
             );
             setSubmitting(false);
@@ -66,7 +70,8 @@ export const Add = () => {
                   name="addDescription"
                   className={clsx(styles.input, styles.description)}
                 />
-
+                <div className={styles.date}>Задайте дедлайн</div>
+                <Field type='date' id="addDate" name="addDate" className={clsx(styles.input, styles.deadline)}/>
                 <div className={styles.upload}>
                   <label htmlFor="addFiles" className={styles.uploadLabel}>
                     Выбрать файлы

@@ -6,5 +6,5 @@ export type TodoProps = {
   attachment?: any[];
   attachmentName?: string;
   attachmentLink?: string;
-  date?: any; //заменить на Date
+  date?: string;
 };

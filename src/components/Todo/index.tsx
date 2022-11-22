@@ -1,19 +1,19 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Formik, Form, Field, FormikHelpers, FormikProps } from 'formik';
+import dayjs from 'dayjs';
 
 import { TodoProps } from './Todo.types';
 import { DeleteIcon, EditIcon } from 'components/icons';
 import { deleteTodo, editTodo, completeTodo } from 'store/todos/todos.asyncActions';
-import { useAppDispatch} from 'store/store.hooks';
+import { useAppDispatch } from 'store/store.hooks';
 import { handleFileUpload } from 'core/utils/handleFileUpload';
 import { Button } from 'components/UI/Button';
 
 import styles from './Todo.module.scss';
 
-
 export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
-  const { id, title, description, completed, attachment, attachmentName } = todo;
+  const { id, title, description, completed, attachment, attachmentName, attachmentLink, date } = todo;
   const [isEditMode, setIsEditMode] = useState(false);
   const formRef = useRef<FormikProps<any>>(null);
   const dispatch = useAppDispatch();
@@ -23,6 +23,7 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
     description: string;
     complete: boolean;
     files: any[];
+    date: string;
   }
 
   const initValues: Values = {
@@ -30,6 +31,7 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
     description: description,
     complete: completed,
     files: attachment,
+    date: date,
   };
 
   const handleCheck = (setValue, check: boolean) => {
@@ -41,6 +43,8 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
     dispatch(deleteTodo(id));
   };
 
+
+  
   return (
     <>
       <Formik
@@ -50,7 +54,7 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
         validateOnBlur={false}
         onSubmit={(values: Values, { setSubmitting }: FormikHelpers<Values>) => {
           setTimeout(async () => {
-
+            
             dispatch(
               editTodo({
                 id: id,
@@ -58,6 +62,7 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
                 description: values.description,
                 completed: values.complete,
                 attachment: values.files,
+                date: values.date,
               })
             );
             setIsEditMode(false);
@@ -87,6 +92,16 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
                 className={clsx(styles.input, styles.description)}
                 disabled={!isEditMode}
               />
+                  <div className={styles.title}>Дедлайн</div>
+                  <Field
+                    type="date"
+                    id="date"
+                    name="date"
+                    className={clsx(styles.date, (dayjs(values.date) < dayjs()) && styles.dateExpired)}
+                    disabled={!isEditMode}
+                  />
+
+
               {isEditMode && (
                 <div className={styles.upload}>
                   <label htmlFor="files" className={styles.uploadLabel}>
@@ -122,8 +137,11 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
                   <div className={styles.title}>Выбранные файлы</div>
                   <ul className={styles.description}>
                     <li>
-                      <a href={todo.attachmentLink} target='_blank' rel="noreferrer">{attachmentName}</a></li>
-                    </ul>
+                      <a href={attachmentLink} target="_blank" rel="noreferrer">
+                        {attachmentName}
+                      </a>
+                    </li>
+                  </ul>
                 </div>
               )}
             </div>
