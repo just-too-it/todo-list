@@ -4,7 +4,9 @@ export type TodoProps = {
   description?: string;
   completed: boolean;
   attachment?: any[];
-  attachmentName?: string;
-  attachmentLink?: string;
   date?: string;
+  files?: {
+    fileName: string;
+    fileLink: string;
+  }[];
 };

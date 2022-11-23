@@ -43,6 +43,7 @@ export const Add = () => {
                 description: values.addDescription,
                 attachment: values.addFiles,
                 date: values.addDate,
+                // files: values.addFiles
               })
             );
             setSubmitting(false);
@@ -68,7 +69,7 @@ export const Add = () => {
                 <Field type="date" id="addDate" name="addDate" className={clsx(styles.input, styles.deadline)} />
                 <div className={styles.upload}>
                   <label htmlFor="addFiles" className={styles.uploadLabel}>
-                    Прикрепить файл
+                    Прикрепить файлы
                   </label>
                   <input
                     id="addFiles"
@@ -82,7 +83,7 @@ export const Add = () => {
 
                 {values.addFiles?.length > 0 ? (
                   <div>
-                    <div className={styles.title}>Прикрепленный файл</div>
+                    <div className={styles.title}>Прикрепленные файлы</div>
                     <ul className={styles.description}>
                       {values.addFiles?.map((file) => (
                         <li key={file.size} className={styles.fileItem}>

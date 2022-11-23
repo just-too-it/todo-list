@@ -35,40 +35,53 @@ export const deleteTodo = createAsyncThunk(
 
 export const addTodo = createAsyncThunk('todos/addTodo', async (todo: TodoProps, { rejectWithValue, dispatch }) => {
   try {
-    if (todo.attachment.length > 0) {
-      let newTodo: TodoProps;
-      const storageRef = ref(storage, todo.attachment[0].name);
-      const uploadTask = uploadBytesResumable(storageRef, todo.attachment[0]);
+    const todoRef = doc(db, 'todos', `${todo.id}`);
+    let todoWithFiles: TodoProps;
 
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
-          switch (snapshot.state) {
-            case 'paused':
-              console.log('Upload is paused');
-              break;
-            case 'running':
-              console.log('Upload is running');
-              break;
+    if (todo.attachment.length > 0) {
+      todo.attachment.forEach((file) => {
+        const storageRef = ref(storage, file.name);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+              case 'paused':
+                console.log('Upload is paused');
+                break;
+              case 'running':
+                console.log('Upload is running');
+                break;
+            }
+          },
+          (error) => {
+            console.error('Error upload: ', error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref)
+              .then((downloadURL) => {
+                let files = todo.files || [];
+                files = [...files, { fileName: uploadTask.snapshot.ref.name, fileLink: downloadURL }];
+                todo = { ...todo, files: files };
+                return files;
+              })
+              .then((files) => {
+                todoWithFiles = { ...todo, files: [...files], attachment: [] };
+
+                if (files.length === 1) {
+                  setDoc(todoRef, todoWithFiles);
+                  dispatch(addTodoItem(todo));
+                } else {
+                  updateDoc(todoRef, todoWithFiles);
+                  dispatch(editTodoItem({ ...todo, files: files }));
+                }
+              });
           }
-        },
-        (error) => {
-          console.error('Error upload: ', error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref)
-            .then((downloadURL) => {
-              todo = { ...todo, attachmentName: uploadTask.snapshot.ref.name, attachmentLink: downloadURL };
-              return (newTodo = { ...todo, attachment: [] });
-            })
-            .then((newTodo) => {
-              setDoc(doc(db, 'todos', `${todo.id}`), newTodo);
-              dispatch(addTodoItem(todo));
-            });
-        }
-      );
+        );
+      });
     } else {
       await setDoc(doc(db, 'todos', `${todo.id}`), todo);
       dispatch(addTodoItem(todo));
@@ -82,40 +95,53 @@ export const addTodo = createAsyncThunk('todos/addTodo', async (todo: TodoProps,
 export const editTodo = createAsyncThunk('todos/editTodo', async (todo: TodoProps, { rejectWithValue, dispatch }) => {
   try {
     const todoRef = doc(db, 'todos', `${todo.id}`);
-    if (todo.attachment.length > 0) {
-      let newTodo: TodoProps;
-      const storageRef = ref(storage, todo.attachment[0].name);
-      const uploadTask = uploadBytesResumable(storageRef, todo.attachment[0]);
+    let todoWithFiles: TodoProps;
 
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
-          switch (snapshot.state) {
-            case 'paused':
-              console.log('Upload is paused');
-              break;
-            case 'running':
-              console.log('Upload is running');
-              break;
+    if (todo.attachment.length > 0) {
+
+      todo.attachment.forEach((file) => {
+        const storageRef = ref(storage, file.name);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+              case 'paused':
+                console.log('Upload is paused');
+                break;
+              case 'running':
+                console.log('Upload is running');
+                break;
+            }
+          },
+          (error) => {
+            console.error('Error upload: ', error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref)
+              .then((downloadURL) => {
+                let files = todo.files || [];
+                files = [...files, { fileName: uploadTask.snapshot.ref.name, fileLink: downloadURL }];
+                todo = { ...todo, files: files };
+                return files;
+              })
+              .then((files) => {
+                todoWithFiles = { ...todo, files: [...files], attachment: [] };
+
+                if (files.length === 1) {
+                  updateDoc(todoRef, todoWithFiles);
+                  dispatch(editTodoItem(todo));
+                } else {
+                  updateDoc(todoRef, todoWithFiles);
+                  dispatch(editTodoItem({ ...todo, files: files }));
+                }
+              });
           }
-        },
-        (error) => {
-          console.error('Error upload: ', error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref)
-            .then((downloadURL) => {
-              todo = { ...todo, attachmentName: uploadTask.snapshot.ref.name, attachmentLink: downloadURL };
-              return (newTodo = { ...todo, attachment: [] });
-            })
-            .then((newTodo) => {
-              updateDoc(todoRef, newTodo);
-              dispatch(editTodoItem(todo));
-            });
-        }
-      );
+        );
+      });
     } else {
       updateDoc(todoRef, {
         title: todo.title,

@@ -1,6 +1,6 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useState } from 'react';
 import clsx from 'clsx';
-import { Formik, Form, Field, FormikHelpers, FormikProps } from 'formik';
+import { Formik, Form, Field, FormikHelpers } from 'formik';
 import dayjs from 'dayjs';
 
 import { TodoProps } from './Todo.types';
@@ -13,9 +13,8 @@ import { Button } from 'components/UI/Button';
 import styles from './Todo.module.scss';
 
 export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
-  const { id, title, description, completed, attachment, attachmentName, attachmentLink, date } = todo;
+  const { id, title, description, completed, date, files } = todo;
   const [isEditMode, setIsEditMode] = useState(false);
-  const formRef = useRef<FormikProps<any>>(null);
   const dispatch = useAppDispatch();
 
   interface Values {
@@ -30,7 +29,7 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
     title: title,
     description: description,
     complete: completed,
-    files: attachment,
+    files: files,
     date: date,
   };
 
@@ -46,7 +45,6 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
   return (
     <>
       <Formik
-        innerRef={formRef}
         initialValues={initValues}
         validateOnChange={true}
         validateOnBlur={false}
@@ -99,44 +97,54 @@ export const Todo: FC<{ todo: TodoProps }> = ({ todo }) => {
               />
 
               {isEditMode && (
-                <div className={styles.upload}>
-                  <label htmlFor="files" className={styles.uploadLabel}>
-                    Прикрепить файл
-                  </label>
-                  <input
-                    id="files"
-                    name="files"
-                    type="file"
-                    onChange={(event) => handleFileUpload(event, setFieldValue, 'files')}
-                    multiple
-                    disabled={completed}
-                    className={styles.file}
-                  />
-                </div>
+                <>
+                  <div className={styles.upload}>
+                    <label htmlFor="files" className={styles.uploadLabel}>
+                      Прикрепить файлы
+                    </label>
+                    <input
+                      id="files"
+                      name="files"
+                      type="file"
+                      onChange={(event) => handleFileUpload(event, setFieldValue, 'files')}
+                      multiple
+                      disabled={completed}
+                      className={styles.file}
+                    />
+                  </div>
+                  {values.files?.length > 0 && (
+                    <div>
+                      <div className={styles.title}>Прикрепленные файлы</div>
+                      <ul className={styles.description}>
+                        {values.files.length === 0
+                          ? files?.map((file, i) => (
+                              <li key={i} className={styles.fileItem}>
+                                <a href={file.fileLink} target="_blank" rel="noreferrer">
+                                  {file.fileName}
+                                </a>
+                              </li>
+                            ))
+                          : values.files?.map((file, i) => (
+                              <li key={i} className={styles.fileItem}>
+                                {file.name}
+                              </li>
+                            ))}
+                      </ul>
+                    </div>
+                  )}
+                </>
               )}
-
-              {/* {values.files?.length > 0 ? (
+              {files?.length > 0 && !isEditMode && (
                 <div>
-                  <div className={styles.title}>Выбранные файлы</div>
+                  <div className={styles.title}>Прикрепленные файлы</div>
                   <ul className={styles.description}>
-                   {values.files?.map((file,i) => (
+                    {files?.map((file, i) => (
                       <li key={i} className={styles.fileItem}>
-                        {file.name}
+                        <a href={file.fileLink} target="_blank" rel="noreferrer">
+                          {file.fileName}
+                        </a>
                       </li>
-                    ))} 
-                  </ul>
-                </div>
-              ) : null} */}
-
-              {attachmentName && (
-                <div>
-                  <div className={styles.title}>Прикрепленный файл</div>
-                  <ul className={styles.description}>
-                    <li>
-                      <a href={attachmentLink} target="_blank" rel="noreferrer">
-                        {attachmentName}
-                      </a>
-                    </li>
+                    ))}
                   </ul>
                 </div>
               )}

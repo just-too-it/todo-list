@@ -32,8 +32,7 @@ export const todosSlice = createSlice({
       todo.description = action.payload.description;
       todo.completed = action.payload.completed;
       todo.attachment = action.payload.attachment;
-      todo.attachmentName = action.payload.attachmentName;
-      todo.attachmentLink = action.payload.attachmentLink;
+      todo.files = action.payload.files
     },
   },
   extraReducers: (builder) => {

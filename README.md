@@ -1,6 +1,6 @@
 # Тестовое задание на frontend-разработчика
 
-TODO-лист с бэкендом firebase.google.com и документаций JSDoc
+TODO-лист с бэкендом firebase.google.com
 
 ## Описание задачи
 
