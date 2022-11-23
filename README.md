@@ -51,5 +51,5 @@ TODO-лист с бэкендом firebase.google.com и документаци�
 
 
 ## Deploy  
-
+https://todo-list-fawn-one.vercel.app/
 
